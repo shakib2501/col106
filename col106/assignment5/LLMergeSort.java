@@ -26,6 +26,15 @@ public class LLMergeSort <T extends Comparator>  {
     //find middle node of LL :
     Node<T> middle = lst.getHead();
     //Enter your code here
+    Node<T> pointer1 = lst.getHead();
+    Node<T> pointer2 = lst.getHead();
+    if (lst.getHead() != null) {
+      while(pointer1 != null && pointer1.next != null) {
+        pointer1 = pointer1.next.next;
+        pointer2 = pointer2.next;
+      }
+      middle = pointer2;
+    }
 
     //!!!!!*****DO NOT REMOVE THIS METHOD CALL (change the argument apprpriately)*****!!!!!
     adjustGlobalPointer(middle.getData()); //Add object of ItemNode after finding mid in each call
@@ -36,8 +45,66 @@ public class LLMergeSort <T extends Comparator>  {
   public LinkedList<T>  MergeSort(LinkedList<T>  lst) {
     //Recursively Apply MergeSort, by calling function findSplit(..) to find middle node to split
     //Enter your code here
+    Node<T> middle = findsplit(lst);
+    if (lst.getHead() == null || lst.getHead().next == null) {
+        return lst;
+    }
+    LinkedList<T> first_half = new LinkedList<>();
+    LinkedList<T> second_half = new LinkedList<>();
+    //creating new LinkedLists
+    boolean flag = true;
+    Node<T> current = lst.getHead();
+    while(current != null) {
+        if(flag == true) {
+            first_half.add(current.getData());
+            if (current == middle)
+                flag = false;
+        }
+        else {
+            second_half.add(current.getData());
+        }
+        current = current.next;
+    }
 
-    return null;
+    //Now we created two Linkedlist
+    first_half = MergeSort(first_half);
+    second_half = MergeSort(second_half);
+
+    //Merging two LinkedLists
+
+
+    return SortedList(first_half, second_half);
+  }
+
+  private LinkedList<T> SortedList(LinkedList<T> lst1, LinkedList lst2) {
+    // if (lst1 == null) {
+    //     return lst2;
+    // }
+    // else if (lst2 == null) {
+    //     return lst1;
+    // }
+    LinkedList<T> resultList = new LinkedList<>();
+    Node<T> current1 = lst1.getHead();
+    Node<T> current2 = lst2.getHead();
+    while (current1 != null && current2 != null) {
+        if (current1.getData() <= current2.getData()) {
+            resultList.add(current1.getData());
+            current1 = current1.next;
+        }
+        else{
+            resultList.add(current2.getData());
+            current2 = current2.next;
+        }
+    }
+    while (current1 == null && current2 != null) {
+        resultList.add(current2.getData());
+        current2 = current2.next;
+    }
+    while (current2 == null && current1 != null) {
+        resultList.add(current2.getData());
+        current2 = current2.next;
+    }
+    return resultList;
   }
 
   //DO NOT CALL OR MODIFY THESE METHODS IN YOUR CALL THIS IS FOR USE IN DRIVER CODE
